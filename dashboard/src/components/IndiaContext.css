@@ -1,0 +1,114 @@
+.india-context {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.context-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 1rem;
+}
+
+.context-header h3 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.context-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.context-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.context-visual {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.bottle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bottle-svg {
+  width: 60px;
+  height: 150px;
+  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.2));
+}
+
+.bottle-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.context-stats {
+  flex: 1;
+}
+
+.comparison-text {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.highlight {
+  color: var(--accent-water);
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.context-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.context-note {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-warning);
+}
+
+.context-note h4 {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.context-note p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.note-disclaimer {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .context-visual {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

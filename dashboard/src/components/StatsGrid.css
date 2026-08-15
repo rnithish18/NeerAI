@@ -1,0 +1,100 @@
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+}
+
+.accent-blue-card::before { background-color: var(--accent-blue); }
+.accent-warning-card::before { background-color: var(--accent-warning); }
+.accent-water-card::before { background-color: var(--accent-water); }
+.accent-emerald-card::before { background-color: var(--accent-emerald); }
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  background: var(--bg-glass);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.stat-unit {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.stat-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-glass);
+}
+
+.trend {
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+}
+
+.trend.up {
+  color: var(--accent-danger); /* Up is bad for energy/water */
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.accent-blue-card .trend.up, .accent-emerald-card .trend.up {
+  color: var(--accent-emerald); /* Up is good for score/sessions */
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.trend.down {
+  color: var(--accent-emerald); /* Down is good for energy/water */
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.accent-blue-card .trend.down, .accent-emerald-card .trend.down {
+  color: var(--accent-danger); /* Down is bad for score/sessions */
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.trend-label {
+  color: var(--text-muted);
+}
