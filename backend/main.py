@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import json
 
-from config import MAX_PAYLOAD_SIZE
+from config import MAX_PAYLOAD_SIZE, WUE_ONSITE, PUE, EWIF_OFFSITE, ORG_NAME
 from estimator import estimate_footprint, calculate_sustainability_score
 from nudge_engine import generate_nudge
 from database import DatabaseManager
@@ -127,9 +127,9 @@ def get_methodology():
             "water_ml": "water_ml = water_litres × 1000"
         },
         "parameters": {
-            "WUE_ONSITE": {"value": 1.0, "unit": "L/kWh", "description": "On-site Water Usage Effectiveness — water used for cooling"},
-            "PUE": {"value": 1.3, "unit": "ratio", "description": "Power Usage Effectiveness — total facility power / IT equipment power"},
-            "EWIF_OFFSITE": {"value": 3.4, "unit": "L/kWh", "description": "Off-site Electricity Water Intensity Factor — water used in electricity generation"}
+            "WUE_ONSITE": {"value": WUE_ONSITE, "unit": "L/kWh", "description": "On-site Water Usage Effectiveness — water used for cooling"},
+            "PUE": {"value": PUE, "unit": "ratio", "description": "Power Usage Effectiveness — total facility power / IT equipment power"},
+            "EWIF_OFFSITE": {"value": EWIF_OFFSITE, "unit": "L/kWh", "description": "Off-site Electricity Water Intensity Factor — water used in electricity generation"}
         },
         "energy_model": {
             "chat": {"value": 0.002, "unit": "kWh per 100 words"},

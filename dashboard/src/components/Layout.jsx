@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
               <span className="logo-icon">💧</span>
               <h1 className="text-gradient">NeerAI</h1>
             </div>
-            <p className="tagline">VSB Engineering College</p>
+            <p className="tagline">India AI Sustainability</p>
           </div>
           
           <nav className="sidebar-nav">

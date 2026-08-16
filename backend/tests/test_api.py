@@ -4,8 +4,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from fastapi.testclient import TestClient
 from main import app
+from database import DatabaseManager
 
 client = TestClient(app)
+
+# Ensure DB tables exist for tests
+db = DatabaseManager()
+db.init_db()
 
 def test_health():
     response = client.get("/health")

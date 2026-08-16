@@ -27,9 +27,9 @@ const CustomTooltip = ({ active, payload, label }) => {
 const OptimizationChart = () => {
   // Demo optimization scenario data
   const data = [
-    { name: 'Default Models', current: 15400, optimized: 8200 },
-    { name: 'Local Caching', current: 9800, optimized: 4100 },
-    { name: 'Off-peak Processing', current: 12500, optimized: 9300 },
+    { name: 'Use Lighter Models', current: 15400, optimized: 8200 },
+    { name: 'Cache Repeated Queries', current: 9800, optimized: 4100 },
+    { name: 'Optimize Prompt Length', current: 12500, optimized: 9300 },
   ];
 
   return (
@@ -49,8 +49,8 @@ const OptimizationChart = () => {
             <YAxis dataKey="name" type="category" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
             <Legend wrapperStyle={{ paddingTop: '20px' }} />
-            <Bar dataKey="current" name="Current Est. Water" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
-            <Bar dataKey="optimized" name="Optimized Projection" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />
+            <Bar dataKey="current" name="Current Est. Footprint (mL)" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
+            <Bar dataKey="optimized" name="After Optimization (mL)" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -18,7 +18,7 @@ const Departments = () => {
     <div className="page animate-fade-in">
       <div className="section-header" style={{ marginBottom: '2rem' }}>
         <h2>Department Analysis</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Usage breakdown across VSB Engineering College</p>
+        <p style={{ color: 'var(--text-muted)' }}>Estimated AI usage breakdown by department</p>
       </div>
       
       <div className="glass-card mb-6" style={{ marginBottom: '1.5rem' }}>

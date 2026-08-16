@@ -18,7 +18,7 @@ const Hostels = () => {
     <div className="page animate-fade-in">
       <div className="section-header" style={{ marginBottom: '2rem' }}>
         <h2>Hostel Analysis</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Usage breakdown across VSB campus residences</p>
+        <p style={{ color: 'var(--text-muted)' }}>Estimated AI usage breakdown by residence</p>
       </div>
       
       <div className="glass-card mb-6" style={{ marginBottom: '1.5rem', height: '400px' }}>

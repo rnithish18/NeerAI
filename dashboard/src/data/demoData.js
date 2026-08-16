@@ -12,9 +12,9 @@ export const generateDemoData = () => {
     const randomFactor = 0.8 + Math.random() * 0.4;
     
     const energy = baseEnergy * randomFactor;
-    // Water = Energy * (WUE + PUE*EWIF)
-    // Roughly 25-35 mL per inference depending on location
-    const water = energy * 185; // Roughly scaling factor for mL
+    // Water = Energy × (WUE_onsite + PUE × EWIF_offsite) × 1000 (for mL)
+    // = Energy × (1.8 + 1.2 × 0.5) × 1000 = Energy × 2400
+    const water = energy * 2400;
     
     dailyData.push({
       date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -27,11 +27,11 @@ export const generateDemoData = () => {
   return {
     dailyData,
     departments: [
-      { name: 'CSE', energy: 125.4, water: 23200, sessions: 15400 },
-      { name: 'ECE', energy: 85.2, water: 15760, sessions: 10200 },
-      { name: 'EEE', energy: 65.8, water: 12170, sessions: 8100 },
-      { name: 'Mechanical', energy: 45.1, water: 8340, sessions: 5500 },
-      { name: 'Civil', energy: 28.5, water: 5270, sessions: 3200 },
+      { name: 'CSE', energy: 12.5, water: 30000, sessions: 1540 },
+      { name: 'ECE', energy: 8.5, water: 20400, sessions: 1020 },
+      { name: 'EEE', energy: 6.6, water: 15840, sessions: 810 },
+      { name: 'Mechanical', energy: 4.5, water: 10800, sessions: 550 },
+      { name: 'Civil', energy: 2.9, water: 6960, sessions: 320 },
     ],
     hostels: [
       { name: 'Sindhu', energy: 112.5, water: 20800 },
@@ -46,9 +46,9 @@ export const generateDemoData = () => {
       { name: 'Image/Media', value: 10, fill: '#06b6d4' },
     ],
     summary: {
-      totalSessions: 42400,
-      totalEnergy: 349.9,
-      totalWater: 64740, // mL
+      totalSessions: 4240,
+      totalEnergy: 35.0,
+      totalWater: 84000, // mL (35 kWh × 2400)
       sustainabilityScore: 78,
     }
   };

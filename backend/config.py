@@ -16,12 +16,12 @@ Different data centers, cooling systems, and regions will have different values.
 # =============================================================================
 # SUSTAINABILITY CONSTANTS (configurable per deployment)
 # =============================================================================
-WUE_ONSITE = 1.0    # On-site Water Usage Effectiveness (L/kWh) — cooling towers
-PUE = 1.3            # Power Usage Effectiveness — total facility / IT equipment
-EWIF_OFFSITE = 3.4   # Off-site Electricity Water Intensity Factor (L/kWh)
+WUE_ONSITE = 1.8    # On-site Water Usage Effectiveness (L/kWh) — cooling towers
+PUE = 1.2            # Power Usage Effectiveness — total facility / IT equipment
+EWIF_OFFSITE = 0.5   # Off-site Electricity Water Intensity Factor (L/kWh)
 
 # Formula: Water (L) = Energy (kWh) × (WUE_ONSITE + PUE × EWIF_OFFSITE)
-# With defaults: Water = Energy × (1.0 + 1.3 × 3.4) = Energy × 5.42
+# With defaults: Water = Energy × (1.8 + 1.2 × 0.5) = Energy × 2.4
 
 # =============================================================================
 # ENERGY MODEL (estimated consumption per 100 output words)
@@ -47,7 +47,8 @@ DEFAULT_REGION = "india"
 # =============================================================================
 # INSTITUTIONAL CONFIGURATION
 # =============================================================================
-INSTITUTION_NAME = "V.S.B. Engineering College"
+# Configurable: set to your institution/org name, or leave as default for national view
+ORG_NAME = "NeerAI — India"
 
 DEPARTMENTS = [
     "CSE",          # Computer Science & Engineering

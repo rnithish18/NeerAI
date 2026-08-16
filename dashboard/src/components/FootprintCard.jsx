@@ -31,7 +31,7 @@ const FootprintCard = ({ water = 0, energy = 0 }) => {
   return (
     <div className="footprint-card glass-card animate-pulse-glow">
       <div className="footprint-header">
-        <h3 className="footprint-title">Live AI Footprint</h3>
+        <h3 className="footprint-title">Estimated AI Footprint</h3>
         <div className="period-toggle">
           <button 
             className={`toggle-btn ${period === 'session' ? 'active' : ''}`}

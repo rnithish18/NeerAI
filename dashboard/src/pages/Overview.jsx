@@ -60,7 +60,7 @@ const Overview = () => {
           What if every unnecessary AI regeneration could be avoided?
         </h3>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto', fontSize: '1.1rem' }}>
-          An average ChatGPT conversation consumes 500mL of water. By understanding and optimizing our usage patterns across VSB Engineering College, we can significantly reduce our collective environmental impact without sacrificing technological advancement.
+          By understanding and optimizing AI usage patterns across India, we can significantly reduce our collective environmental impact without sacrificing technological advancement.
         </p>
       </div>
     </div>

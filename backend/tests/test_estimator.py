@@ -30,10 +30,10 @@ def test_image_task():
     assert abs(energy - 0.05) < 0.001
 
 def test_water_formula():
-    """Water = Energy × (WUE_onsite + PUE × EWIF_offsite) = Energy × (1.0 + 1.3 × 3.4) = Energy × 5.42"""
+    """Water = Energy × (WUE_onsite + PUE × EWIF_offsite) = Energy × (1.8 + 1.2 × 0.5) = Energy × 2.4"""
     energy = 0.002  # 100 words chat
     water = estimate_water(energy)
-    expected_litres = 0.002 * (1.0 + 1.3 * 3.4)  # = 0.002 * 5.42 = 0.01084
+    expected_litres = 0.002 * (1.8 + 1.2 * 0.5)  # = 0.002 * 2.4 = 0.0048
     assert abs(water["litres"] - expected_litres) < 0.0001
     assert abs(water["ml"] - expected_litres * 1000) < 0.1
 
