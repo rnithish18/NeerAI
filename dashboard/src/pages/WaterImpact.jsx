@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import DailyWaterChart from '../components/charts/DailyWaterChart';
-import DepartmentChart from '../components/charts/DepartmentChart';
+import SectorChart from '../components/charts/SectorChart';
 import IndiaContext from '../components/IndiaContext';
-import { fetchDailyTrends, fetchDepartmentStats, fetchDashboardSummary } from '../api';
+import { fetchDailyTrends, fetchSectorStats, fetchDashboardSummary } from '../api';
 
 const WaterImpact = () => {
   const [trends, setTrends] = useState([]);
-  const [departments, setDepartments] = useState([]);
+  const [sectors, setSectors] = useState([]);
   const [summary, setSummary] = useState(null);
   
   useEffect(() => {
     const loadData = async () => {
       setTrends(await fetchDailyTrends(30));
-      setDepartments(await fetchDepartmentStats());
+      setSectors(await fetchSectorStats());
       setSummary(await fetchDashboardSummary());
     };
     loadData();
@@ -32,7 +32,7 @@ const WaterImpact = () => {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6" style={{ marginBottom: '1.5rem' }}>
-        <DepartmentChart data={departments} />
+        <SectorChart data={sectors} />
         <IndiaContext waterMl={summary.totalWater} />
       </div>
       

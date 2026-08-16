@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS sessions (
     word_count INTEGER NOT NULL,
     energy_kwh REAL NOT NULL,
     water_ml REAL NOT NULL,
-    department TEXT,
-    hostel TEXT,
+    sector TEXT,
+    region TEXT,
     sustainability_score INTEGER,
     nudge_type TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -21,14 +21,14 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS daily_aggregates (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date DATE NOT NULL,
-    department TEXT NOT NULL,
+    sector TEXT NOT NULL,
     total_sessions INTEGER DEFAULT 0,
     total_energy REAL DEFAULT 0.0,
     total_water REAL DEFAULT 0.0,
     avg_score REAL DEFAULT 100.0,
-    UNIQUE(date, department)
+    UNIQUE(date, sector)
 );
 
 CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(created_at);
-CREATE INDEX IF NOT EXISTS idx_sessions_dept ON sessions(department);
-CREATE INDEX IF NOT EXISTS idx_sessions_hostel ON sessions(hostel);
+CREATE INDEX IF NOT EXISTS idx_sessions_sector ON sessions(sector);
+CREATE INDEX IF NOT EXISTS idx_sessions_region ON sessions(region);

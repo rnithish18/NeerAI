@@ -35,7 +35,7 @@ class DatabaseManager:
     def log_session(self, data):
         query = '''
             INSERT INTO sessions 
-            (provider, task_type, word_count, energy_kwh, water_ml, department, hostel, sustainability_score, nudge_type)
+            (provider, task_type, word_count, energy_kwh, water_ml, sector, region, sustainability_score, nudge_type)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         '''
         with self.get_connection() as conn:
@@ -46,8 +46,8 @@ class DatabaseManager:
                 data.get('word_count', 0),
                 data.get('energy_kwh', 0.0),
                 data.get('water_ml', 0.0),
-                data.get('department'),
-                data.get('hostel'),
+                data.get('sector'),
+                data.get('region'),
                 data.get('sustainability_score', 100),
                 data.get('nudge_type')
             ))
@@ -88,33 +88,33 @@ class DatabaseManager:
             rows = conn.execute(query, (f'-{days} days',)).fetchall()
             return [dict(row) for row in rows]
             
-    def get_department_stats(self):
+    def get_sector_stats(self):
         query = '''
             SELECT 
-                department,
+                sector,
                 SUM(energy_kwh) as total_energy,
                 SUM(water_ml) as total_water,
                 AVG(sustainability_score) as avg_score,
                 COUNT(id) as session_count
             FROM sessions
-            WHERE department IS NOT NULL
-            GROUP BY department
+            WHERE sector IS NOT NULL
+            GROUP BY sector
             ORDER BY total_water DESC
         '''
         with self.get_connection() as conn:
             rows = conn.execute(query).fetchall()
             return [dict(row) for row in rows]
             
-    def get_hostel_stats(self):
+    def get_region_stats(self):
         query = '''
             SELECT 
-                hostel,
+                region,
                 SUM(energy_kwh) as total_energy,
                 SUM(water_ml) as total_water,
                 AVG(sustainability_score) as avg_score
             FROM sessions
-            WHERE hostel IS NOT NULL
-            GROUP BY hostel
+            WHERE region IS NOT NULL
+            GROUP BY region
             ORDER BY total_water DESC
         '''
         with self.get_connection() as conn:
@@ -122,7 +122,7 @@ class DatabaseManager:
             return [dict(row) for row in rows]
 
     def generate_demo_data(self):
-        from config import DEPARTMENTS, HOSTELS
+        from config import USAGE_SECTORS, REGIONS_INDIA
         with self.get_connection() as conn:
             cursor = conn.cursor()
             for i in range(30):
@@ -132,8 +132,8 @@ class DatabaseManager:
                 # generate random sessions
                 num_sessions = random.randint(10, 50)
                 for _ in range(num_sessions):
-                    dept = random.choice(DEPARTMENTS)
-                    hostel = random.choice(HOSTELS)
+                    sector_val = random.choice(USAGE_SECTORS)
+                    region_val = random.choice(REGIONS_INDIA)
                     task = random.choice(["chat", "code", "image"])
                     words = random.randint(10, 1000)
                     
@@ -144,9 +144,9 @@ class DatabaseManager:
                     
                     cursor.execute('''
                         INSERT INTO sessions 
-                        (provider, task_type, word_count, energy_kwh, water_ml, department, hostel, sustainability_score, created_at)
+                        (provider, task_type, word_count, energy_kwh, water_ml, sector, region, sustainability_score, created_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', ("demo", task, words, footprint['energy_kwh'], footprint['water_ml'], dept, hostel, score, date_str))
+                    ''', ("demo", task, words, footprint['energy_kwh'], footprint['water_ml'], sector_val, region_val, score, date_str))
             conn.commit()
 
     def clear_demo_data(self):
@@ -158,7 +158,7 @@ class DatabaseManager:
         with self.get_connection() as conn:
             rows = conn.execute("SELECT * FROM sessions ORDER BY created_at DESC").fetchall()
             if not rows:
-                return "id,provider,task_type,word_count,energy_kwh,water_ml,department,hostel,sustainability_score,nudge_type,created_at\n"
+                return "id,provider,task_type,word_count,energy_kwh,water_ml,sector,region,sustainability_score,nudge_type,created_at\n"
                 
             output = io.StringIO()
             writer = csv.writer(output)

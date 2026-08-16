@@ -50,21 +50,11 @@ DEFAULT_REGION = "india"
 # Configurable: set to your institution/org name, or leave as default for national view
 ORG_NAME = "NeerAI — India"
 
-DEPARTMENTS = [
-    "CSE",          # Computer Science & Engineering
-    "ECE",          # Electronics & Communication Engineering
-    "EEE",          # Electrical & Electronics Engineering
-    "Mechanical",   # Mechanical Engineering
-    "Civil",        # Civil Engineering
-]
+# Primary segment axis: which sector of usage
+USAGE_SECTORS = ["Education", "IT & Software", "Government", "Healthcare", "Research"]
 
-HOSTELS = [
-    "Boys Hostel A",
-    "Boys Hostel B",
-    "Boys Hostel C",
-    "Girls Hostel A",
-    "Girls Hostel B",
-]
+# Secondary segment axis: which region
+REGIONS_INDIA = ["North", "South", "East", "West", "Central"]
 
 # =============================================================================
 # SECURITY & LIMITS

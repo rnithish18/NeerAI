@@ -45,8 +45,8 @@ class EstimateRequest(BaseModel):
     region: Optional[str] = "india"
 
 class LogRequest(EstimateRequest):
-    department: Optional[str] = None
-    hostel: Optional[str] = None
+    sector: Optional[str] = None
+    region: Optional[str] = None
     history: Optional[List[str]] = []
     regen_count: int = 0
 
@@ -85,8 +85,8 @@ def log_session(req: LogRequest):
         "word_count": req.word_count,
         "energy_kwh": footprint["energy_kwh"],
         "water_ml": footprint["water_ml"],
-        "department": req.department,
-        "hostel": req.hostel,
+        "sector": req.sector,
+        "region": req.region,
         "sustainability_score": score,
         "nudge_type": nudge["type"] if nudge else None
     }
@@ -107,13 +107,13 @@ def dashboard_summary(days: int = 7):
 def dashboard_trends(days: int = 30):
     return db.get_daily_trends(days)
 
-@app.get("/dashboard/departments")
-def dashboard_departments():
-    return db.get_department_stats()
+@app.get("/dashboard/sectors")
+def dashboard_sectors():
+    return db.get_sector_stats()
 
-@app.get("/dashboard/hostels")
-def dashboard_hostels():
-    return db.get_hostel_stats()
+@app.get("/dashboard/regions")
+def dashboard_regions():
+    return db.get_region_stats()
 
 @app.get("/methodology")
 def get_methodology():

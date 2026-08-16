@@ -283,6 +283,45 @@ function showInlineToast(message, type = 'info') {
 }
 
 // ============================================================================
+// FLOATING EMOJI REACTION
+// ============================================================================
+function showFloatingEmoji(node, energy) {
+  let emoji = '🌱'; // Low footprint
+  if (energy > 0.05) emoji = '🌊'; // High footprint
+  else if (energy > 0.01) emoji = '💧'; // Moderate footprint
+
+  const el = document.createElement('div');
+  el.textContent = emoji;
+  el.style.cssText = `
+    position: absolute;
+    right: -30px;
+    top: 0;
+    font-size: 24px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 1s ease-out;
+    pointer-events: none;
+    z-index: 100;
+  `;
+
+  if (getComputedStyle(node).position === 'static') {
+    node.style.position = 'relative';
+  }
+  
+  node.appendChild(el);
+
+  requestAnimationFrame(() => {
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(-20px)';
+  });
+
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-40px)';
+    setTimeout(() => el.remove(), 1000);
+  }, 3000);
+}
+// ============================================================================
 // CORE: PROCESS NEW AI RESPONSE
 // ============================================================================
 function processNewResponse(node) {
@@ -347,6 +386,7 @@ function processNewResponse(node) {
     isSimple,
     timestamp: Date.now()
   });
+  showFloatingEmoji(node, energy);
 
   // Keep history manageable
   if (sessionData.responses.length > 100) sessionData.responses.shift();

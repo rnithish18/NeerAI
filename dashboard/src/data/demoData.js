@@ -26,19 +26,19 @@ export const generateDemoData = () => {
 
   return {
     dailyData,
-    departments: [
-      { name: 'CSE', energy: 12.5, water: 30000, sessions: 1540 },
-      { name: 'ECE', energy: 8.5, water: 20400, sessions: 1020 },
-      { name: 'EEE', energy: 6.6, water: 15840, sessions: 810 },
-      { name: 'Mechanical', energy: 4.5, water: 10800, sessions: 550 },
-      { name: 'Civil', energy: 2.9, water: 6960, sessions: 320 },
+    sectors: [
+      { name: 'IT & Software', energy: 12.5, water: 30000, sessions: 1540 },
+      { name: 'Education', energy: 8.5, water: 20400, sessions: 1020 },
+      { name: 'Research', energy: 6.6, water: 15840, sessions: 810 },
+      { name: 'Government', energy: 4.5, water: 10800, sessions: 550 },
+      { name: 'Healthcare', energy: 2.9, water: 6960, sessions: 320 },
     ],
-    hostels: [
-      { name: 'Sindhu', energy: 112.5, water: 20800 },
-      { name: 'Ganga', energy: 95.2, water: 17600 },
-      { name: 'Yamuna', energy: 88.4, water: 16350 },
-      { name: 'Kaveri', energy: 76.1, water: 14080 },
-      { name: 'Godavari', energy: 65.8, water: 12170 },
+    regions: [
+      { name: 'South', energy: 112.5, water: 20800 },
+      { name: 'North', energy: 95.2, water: 17600 },
+      { name: 'West', energy: 88.4, water: 16350 },
+      { name: 'East', energy: 76.1, water: 14080 },
+      { name: 'Central', energy: 65.8, water: 12170 },
     ],
     taskDistribution: [
       { name: 'Chat/Text', value: 65, fill: '#3b82f6' },

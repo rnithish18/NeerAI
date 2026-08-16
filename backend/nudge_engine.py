@@ -44,7 +44,7 @@ def generate_nudge(text, word_count, task_type, regen_count=0, history=None):
         return {
             "type": "duplicate",
             "severity": "high",
-            "message": "You've asked this recently. Check your history to save AI resources.",
+            "message": "♻️ You've asked this recently. Check your history to save AI resources.",
             "icon": "♻️"
         }
         
@@ -52,7 +52,7 @@ def generate_nudge(text, word_count, task_type, regen_count=0, history=None):
         return {
             "type": "simple_task",
             "severity": "medium",
-            "message": "Simple tasks like this use significant energy via AI. Consider using a traditional calculator or search.",
+            "message": "🧮 Simple tasks like this use significant energy via AI. Consider using a traditional calculator or search.",
             "icon": "🧮"
         }
         
@@ -60,7 +60,7 @@ def generate_nudge(text, word_count, task_type, regen_count=0, history=None):
         return {
             "type": "regeneration",
             "severity": "low",
-            "message": "Multiple regenerations consume extra water and energy. Try refining your prompt.",
+            "message": "🔄 Multiple regenerations consume extra water and energy. Try refining your prompt.",
             "icon": "🔄"
         }
         
@@ -68,7 +68,7 @@ def generate_nudge(text, word_count, task_type, regen_count=0, history=None):
         return {
             "type": "excessive_output",
             "severity": "medium",
-            "message": "Long responses have a high water footprint. Consider asking for concise summaries.",
+            "message": "💧 Long responses have a high water footprint. Consider asking for concise summaries.",
             "icon": "💧"
         }
         

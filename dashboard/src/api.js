@@ -27,20 +27,20 @@ const transformTrends = (data) => {
   }));
 };
 
-const transformDepartments = (data) => {
+const transformSectors = (data) => {
   if (!Array.isArray(data)) return [];
   return data.map(d => ({
-    name: d.department ?? d.name ?? 'Unknown',
+    name: d.sector ?? d.name ?? 'Unknown',
     energy: d.total_energy ?? d.energy ?? 0,
     water: d.total_water ?? d.water ?? 0,
     sessions: d.session_count ?? d.sessions ?? 0,
   }));
 };
 
-const transformHostels = (data) => {
+const transformRegions = (data) => {
   if (!Array.isArray(data)) return [];
   return data.map(d => ({
-    name: d.hostel ?? d.name ?? 'Unknown',
+    name: d.region ?? d.name ?? 'Unknown',
     energy: d.total_energy ?? d.energy ?? 0,
     water: d.total_water ?? d.water ?? 0,
   }));
@@ -92,29 +92,29 @@ export const fetchDailyTrends = async (days = 30) => {
   }
 };
 
-export const fetchDepartmentStats = async () => {
-  if (useDemoData) return getDemoData().departments;
+export const fetchSectorStats = async () => {
+  if (useDemoData) return getDemoData().sectors;
   try {
-    const data = await fetchFromAPI('/dashboard/departments');
-    const transformed = transformDepartments(data);
-    return transformed.length > 0 ? transformed : getDemoData().departments;
+    const data = await fetchFromAPI('/dashboard/sectors');
+    const transformed = transformSectors(data);
+    return transformed.length > 0 ? transformed : getDemoData().sectors;
   } catch (e) {
-    console.warn('API unavailable for departments, using demo data');
+    console.warn('API unavailable for sectors, using demo data');
     useDemoData = true;
-    return getDemoData().departments;
+    return getDemoData().sectors;
   }
 };
 
-export const fetchHostelStats = async () => {
-  if (useDemoData) return getDemoData().hostels;
+export const fetchRegionStats = async () => {
+  if (useDemoData) return getDemoData().regions;
   try {
-    const data = await fetchFromAPI('/dashboard/hostels');
-    const transformed = transformHostels(data);
-    return transformed.length > 0 ? transformed : getDemoData().hostels;
+    const data = await fetchFromAPI('/dashboard/regions');
+    const transformed = transformRegions(data);
+    return transformed.length > 0 ? transformed : getDemoData().regions;
   } catch (e) {
-    console.warn('API unavailable for hostels, using demo data');
+    console.warn('API unavailable for regions, using demo data');
     useDemoData = true;
-    return getDemoData().hostels;
+    return getDemoData().regions;
   }
 };
 

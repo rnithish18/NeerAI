@@ -4,45 +4,83 @@
   <meta charset="UTF-8">
   <title>NeerAI</title>
   <link rel="stylesheet" href="popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="water-bg"></div>
   
   <header>
-    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#22d3ee" />
-          <stop offset="100%" stop-color="#06b6d4" />
-        </linearGradient>
-      </defs>
-      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="url(#logoGrad)"/>
-    </svg>
-    <h1>NeerAI</h1>
+    <div class="header-left">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#22d3ee" />
+            <stop offset="100%" stop-color="#06b6d4" />
+          </linearGradient>
+        </defs>
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="url(#logoGrad)"/>
+      </svg>
+      <h1>NeerAI</h1>
+    </div>
+    <div id="provider-badge" class="badge">Unknown</div>
   </header>
 
   <main>
-    <div class="session-header">
-      <h2>Current Session</h2>
-      <div id="provider-badge" class="badge">Unknown</div>
+    <!-- Daily Check-in Prompt -->
+    <div id="daily-checkin" class="daily-checkin" style="display:none;">
+      <div class="checkin-icon">💡</div>
+      <div class="checkin-text" id="checkin-msg">Tip of the day!</div>
+      <button id="btn-close-checkin" class="btn-close">×</button>
+    </div>
+
+    <!-- Illustrated Sustainability Score Panel -->
+    <div class="score-panel">
+      <div class="score-illustration">
+        <svg viewBox="0 0 100 100" class="progress-ring">
+          <circle class="progress-ring__circle bg" cx="50" cy="50" r="40"></circle>
+          <circle class="progress-ring__circle val" id="score-ring" cx="50" cy="50" r="40"></circle>
+          <text x="50" y="55" class="score-text" id="val-score">100</text>
+        </svg>
+        <div class="score-label">Sustainability Score</div>
+      </div>
+      
+      <!-- Quick Reaction Row -->
+      <div class="reaction-row">
+        <span>How's this session?</span>
+        <div class="reaction-buttons">
+          <button class="reaction-btn" data-reaction="up">👍</button>
+          <button class="reaction-btn" data-reaction="down">👎</button>
+          <button class="reaction-btn" data-reaction="think">🤔</button>
+        </div>
+      </div>
     </div>
 
     <div class="stats-grid">
+      <!-- Icon-badged stat cards with sparklines -->
       <div class="stat-card">
-        <span class="stat-label">Interactions</span>
-        <span class="stat-value" id="val-interactions">0</span>
+        <div class="stat-icon">⚡</div>
+        <div class="stat-info">
+          <span class="stat-label">Est. Energy</span>
+          <span class="stat-value"><span id="val-energy">0.00</span> <span class="unit">kWh</span></span>
+        </div>
+        <svg class="sparkline" viewBox="0 0 50 15"><path d="M0,10 L10,8 L20,12 L30,5 L40,8 L50,2" fill="none" stroke="#f59e0b" stroke-width="2"/></svg>
       </div>
-      <div class="stat-card score-card">
-        <span class="stat-label">Sustainability Score</span>
-        <span class="stat-value" id="val-score">100</span>
-      </div>
+
       <div class="stat-card">
-        <span class="stat-label">Estimated Energy</span>
-        <span class="stat-value"><span id="val-energy">0.00</span> <span class="unit">kWh</span></span>
+        <div class="stat-icon">💧</div>
+        <div class="stat-info">
+          <span class="stat-label">Est. Water</span>
+          <span class="stat-value"><span id="val-water">0.0</span> <span class="unit">mL</span></span>
+        </div>
+        <svg class="sparkline" viewBox="0 0 50 15"><path d="M0,12 L10,9 L20,10 L30,4 L40,6 L50,1" fill="none" stroke="#3b82f6" stroke-width="2"/></svg>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">Estimated Water</span>
-        <span class="stat-value"><span id="val-water">0.0</span> <span class="unit">mL</span></span>
+      
+      <div class="stat-card full-width">
+        <div class="stat-icon">💬</div>
+        <div class="stat-info">
+          <span class="stat-label">Interactions</span>
+          <span class="stat-value" id="val-interactions">0</span>
+        </div>
       </div>
     </div>
 
@@ -51,7 +89,7 @@
     </div>
 
     <div id="pattern-area" class="pattern-area" style="display:none;">
-      <div class="pattern-header">This Session's Pattern</div>
+      <div class="pattern-header">🔍 This Session's Pattern</div>
       <div id="pattern-insights">
         <!-- Pattern insights injected by popup.js -->
       </div>
@@ -59,7 +97,7 @@
 
     <div class="actions">
       <button id="btn-reset" class="btn secondary">Reset Session</button>
-      <button id="btn-dashboard" class="btn primary">View Dashboard</button>
+      <button id="btn-dashboard" class="btn gradient-cta">View Dashboard</button>
     </div>
   </main>
 

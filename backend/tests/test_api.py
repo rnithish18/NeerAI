@@ -64,7 +64,7 @@ def test_log_session():
         "word_count": 150,
         "task_type": "chat",
         "provider": "chatgpt",
-        "department": "CSE"
+        "sector": "Education"
     })
     assert response.status_code == 200
     data = response.json()
@@ -96,13 +96,13 @@ def test_dashboard_trends():
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-def test_dashboard_departments():
-    response = client.get("/dashboard/departments")
+def test_dashboard_sectors():
+    response = client.get("/dashboard/sectors")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-def test_dashboard_hostels():
-    response = client.get("/dashboard/hostels")
+def test_dashboard_regions():
+    response = client.get("/dashboard/regions")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 

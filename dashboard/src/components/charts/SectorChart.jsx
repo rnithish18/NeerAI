@@ -24,12 +24,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const colors = ['#06b6d4', '#3b82f6', '#14b8a6', '#8b5cf6', '#ec4899'];
 
-const DepartmentChart = ({ data }) => {
+const SectorChart = ({ data }) => {
   if (!data || data.length === 0) return null;
 
   return (
     <div className="chart-card glass-card" style={{ height: '400px', display: 'flex', flexDirection: 'column' }}>
-      <h3 style={{ marginBottom: '1.5rem', fontSize: '1.125rem' }}>Department Comparison — Estimated AI Water Footprint</h3>
+      <h3 style={{ marginBottom: '1.5rem', fontSize: '1.125rem' }}>Sector Comparison - Estimated AI Water Footprint</h3>
       <div style={{ flex: 1, minHeight: 0 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -63,4 +63,4 @@ const DepartmentChart = ({ data }) => {
   );
 };
 
-export default DepartmentChart;
+export default SectorChart;
