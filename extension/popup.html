@@ -22,10 +22,39 @@
       </svg>
       <h1>NeerAI</h1>
     </div>
-    <div id="provider-badge" class="badge">Unknown</div>
+    <div class="header-badges">
+      <div id="streak-badge" class="badge streak-badge" style="display:none; background: linear-gradient(135deg, #f59e0b, #ef4444); color: white;">🔥 <span id="streak-count">0</span>-day streak</div>
+      <div id="provider-badge" class="badge">Unknown</div>
+    </div>
   </header>
 
   <main>
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-modal" style="display:none;">
+      <div class="onboarding-content">
+        <h2 style="margin-top:0; font-size:16px;">Welcome to NeerAI</h2>
+        <div id="onboarding-step-1" class="onboarding-step">
+          <p>💧 NeerAI estimates the hidden water/energy cost of your AI conversations — in real time, right here.</p>
+          <button class="btn gradient-cta btn-next-step" data-next="2">Next</button>
+        </div>
+        <div id="onboarding-step-2" class="onboarding-step" style="display:none;">
+          <p>🎯 We'll nudge you when a lighter approach works just as well — never blocking, always optional.</p>
+          <button class="btn gradient-cta btn-next-step" data-next="3">Next</button>
+        </div>
+        <div id="onboarding-step-3" class="onboarding-step" style="display:none;">
+          <p>🔒 Nothing you type or read is ever sent anywhere — only word counts and estimates.</p>
+          <button id="btn-finish-onboarding" class="btn gradient-cta">Got it, let's go</button>
+        </div>
+        <button id="btn-skip-onboarding" class="btn secondary" style="margin-top:8px;">Skip</button>
+      </div>
+    </div>
+
+    <!-- Weekly Impact Story -->
+    <div id="weekly-story" class="weekly-story pattern-area" style="display:none; border-left: 4px solid #10b981;">
+      <div class="pattern-header" style="color: #10b981;">Weekly Impact Story</div>
+      <div id="weekly-story-content" style="font-size: 13px; color: #cbd5e1; margin-top: 8px;"></div>
+    </div>
+
     <!-- Daily Check-in Prompt -->
     <div id="daily-checkin" class="daily-checkin" style="display:none;">
       <div class="checkin-icon">💡</div>

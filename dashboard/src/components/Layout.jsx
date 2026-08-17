@@ -1,10 +1,19 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import DemoModeBanner from './DemoModeBanner';
+import { isDemoMode } from '../api';
 import './Layout.css';
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const [isDemo, setIsDemo] = React.useState(isDemoMode());
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setIsDemo(isDemoMode());
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navItems = [
     { path: '/', label: 'Overview', icon: '📊' },
@@ -45,8 +54,8 @@ const Layout = ({ children }) => {
           
           <div className="sidebar-footer">
             <div className="status-indicator">
-              <span className="status-dot demo"></span>
-              <span className="status-text">Demo Mode Active</span>
+              <span className={`status-dot ${isDemo ? 'demo' : 'live'}`}></span>
+              <span className="status-text">{isDemo ? 'Demo Mode Active' : 'Live Data Sync'}</span>
             </div>
           </div>
         </aside>

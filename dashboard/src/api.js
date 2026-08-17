@@ -67,10 +67,10 @@ export const fetchHealth = async () => {
   }
 };
 
-export const fetchDashboardSummary = async () => {
+export const fetchDashboardSummary = async (days = 7) => {
   if (useDemoData) return getDemoData().summary;
   try {
-    const data = await fetchFromAPI('/dashboard/summary?days=30');
+    const data = await fetchFromAPI(`/dashboard/summary?days=${days}`);
     return transformSummary(data);
   } catch (e) {
     console.warn('API unavailable for summary, using demo data');
@@ -92,10 +92,11 @@ export const fetchDailyTrends = async (days = 30) => {
   }
 };
 
-export const fetchSectorStats = async () => {
+export const fetchSectorStats = async (days = null) => {
   if (useDemoData) return getDemoData().sectors;
   try {
-    const data = await fetchFromAPI('/dashboard/sectors');
+    const url = days ? `/dashboard/sectors?days=${days}` : '/dashboard/sectors';
+    const data = await fetchFromAPI(url);
     const transformed = transformSectors(data);
     return transformed.length > 0 ? transformed : getDemoData().sectors;
   } catch (e) {
@@ -105,16 +106,45 @@ export const fetchSectorStats = async () => {
   }
 };
 
-export const fetchRegionStats = async () => {
+export const fetchRegionStats = async (days = null) => {
   if (useDemoData) return getDemoData().regions;
   try {
-    const data = await fetchFromAPI('/dashboard/regions');
+    const url = days ? `/dashboard/regions?days=${days}` : '/dashboard/regions';
+    const data = await fetchFromAPI(url);
     const transformed = transformRegions(data);
     return transformed.length > 0 ? transformed : getDemoData().regions;
   } catch (e) {
     console.warn('API unavailable for regions, using demo data');
     useDemoData = true;
     return getDemoData().regions;
+  }
+};
+
+export const fetchSettingsAPI = async () => {
+  try {
+    return await fetchFromAPI('/settings');
+  } catch (e) {
+    const local = localStorage.getItem('neerai_settings');
+    return local ? JSON.parse(local) : {
+      nudge_sensitivity: "standard",
+      reasoning_alerts: "true",
+      presubmit_nudge: "true",
+      max_output_threshold: "500"
+    };
+  }
+};
+
+export const updateSettingAPI = async (key, value) => {
+  try {
+    await fetch(`${API_BASE}/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value: String(value) })
+    });
+  } catch (e) {
+    const current = JSON.parse(localStorage.getItem('neerai_settings') || '{}');
+    current[key] = String(value);
+    localStorage.setItem('neerai_settings', JSON.stringify(current));
   }
 };
 

@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         responses: [], duplicateCount: 0, regenCount: 0
       };
       updateUI(data);
+      syncToBackend(data);
 
       // Run pattern analysis from stored responses
       if (data.responses && data.responses.length >= 3) {
@@ -130,6 +131,37 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
           }
         });
+      }
+
+      // Onboarding Logic
+      chrome.storage.local.get(['onboarded', 'neerai_streak'], (res) => {
+        if (!res.onboarded) {
+          document.getElementById('onboarding-modal').style.display = 'block';
+        }
+
+        // Streak Badge
+        const streak = res.neerai_streak || { count: 0, lastDate: null };
+        if (streak.count > 0) {
+          document.getElementById('streak-badge').style.display = 'block';
+          document.getElementById('streak-count').textContent = streak.count;
+        }
+      });
+
+      // Weekly Impact Story
+      if (data.responses && data.responses.length > 0) {
+        const firstResponseTime = data.responses[0].timestamp;
+        const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        
+        // Show if history spans more than 7 days, or if they have more than 15 responses
+        if (firstResponseTime < oneWeekAgo || data.responses.length >= 15) {
+          const totalWater = data.totalWater || 0;
+          const totalEnergy = data.totalEnergy || 0;
+          const bottleEquiv = (totalWater / 500).toFixed(1);
+          
+          document.getElementById('weekly-story').style.display = 'block';
+          document.getElementById('weekly-story-content').innerHTML = 
+            `This week you had <strong>${data.responses.length}</strong> conversations. Estimated footprint: <strong>${totalWater.toFixed(1)} mL</strong> water, <strong>${totalEnergy.toFixed(4)} kWh</strong> energy — roughly equivalent to <strong>${bottleEquiv} bottles of water</strong> (500mL).`;
+        }
       }
     });
   }
@@ -190,8 +222,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  function syncToBackend(data) {
+    if (!data || !data.interactions) return;
+    fetch('http://localhost:8000/sync/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        interactions: data.interactions,
+        total_energy: data.totalEnergy || 0.0,
+        total_water: data.totalWater || 0.0,
+        score: data.score || 94,
+        responses: data.responses || []
+      })
+    }).catch(() => { /* silent fail if backend offline */ });
+  }
+
   // Dashboard Button
   document.getElementById('btn-dashboard').addEventListener('click', () => {
-    chrome.tabs.create({ url: 'http://localhost:5173' });
+    chrome.storage.local.get(['neerai_session'], (result) => {
+      if (result.neerai_session) {
+        syncToBackend(result.neerai_session);
+      }
+      chrome.tabs.create({ url: 'http://localhost:5173' });
+    });
+  });
+
+  // Onboarding Buttons
+  document.querySelectorAll('.btn-next-step').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const next = e.target.dataset.next;
+      document.querySelectorAll('.onboarding-step').forEach(el => el.style.display = 'none');
+      document.getElementById('onboarding-step-' + next).style.display = 'block';
+    });
+  });
+
+  document.getElementById('btn-finish-onboarding').addEventListener('click', () => {
+    document.getElementById('onboarding-modal').style.display = 'none';
+    chrome.storage.local.set({ onboarded: true });
+  });
+
+  document.getElementById('btn-skip-onboarding').addEventListener('click', () => {
+    document.getElementById('onboarding-modal').style.display = 'none';
+    chrome.storage.local.set({ onboarded: true });
   });
 });

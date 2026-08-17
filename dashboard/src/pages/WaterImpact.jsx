@@ -2,38 +2,57 @@ import React, { useState, useEffect } from 'react';
 import DailyWaterChart from '../components/charts/DailyWaterChart';
 import SectorChart from '../components/charts/SectorChart';
 import IndiaContext from '../components/IndiaContext';
+import DateRangeSelector from '../components/DateRangeSelector';
 import { fetchDailyTrends, fetchSectorStats, fetchDashboardSummary } from '../api';
 
 const WaterImpact = () => {
+  const [days, setDays] = useState(30);
   const [trends, setTrends] = useState([]);
   const [sectors, setSectors] = useState([]);
+  const [selectedSector, setSelectedSector] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const loadData = async () => {
-      setTrends(await fetchDailyTrends(30));
-      setSectors(await fetchSectorStats());
-      setSummary(await fetchDashboardSummary());
+      setLoading(true);
+      const [trendsData, sectorsData, summaryData] = await Promise.all([
+        fetchDailyTrends(days),
+        fetchSectorStats(days),
+        fetchDashboardSummary(days)
+      ]);
+      
+      setTrends(trendsData);
+      setSectors(sectorsData);
+      setSummary(summaryData);
+      setLoading(false);
     };
     loadData();
-  }, []);
+  }, [days]);
 
-  if (!summary) return <div>Loading...</div>;
+  if (!summary && loading) return <div className="loading">Loading water impact data...</div>;
 
   return (
     <div className="page animate-fade-in">
-      <div className="section-header" style={{ marginBottom: '2rem' }}>
-        <h2>Water Impact Analysis</h2>
-        <p style={{ color: 'var(--text-muted)' }}>All values are estimates based on standard PUE and WUE metrics</p>
+      <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div>
+          <h2>Water Impact Analysis</h2>
+          <p style={{ color: 'var(--text-muted)', margin: '4px 0 0' }}>All values are estimates based on standard PUE and WUE metrics (Li et al., 2023)</p>
+        </div>
+        <DateRangeSelector value={days} onChange={setDays} />
       </div>
       
       <div className="glass-card mb-6" style={{ marginBottom: '1.5rem' }}>
-        <DailyWaterChart data={trends} title="30-Day Estimated Water Footprint Trend" />
+        <DailyWaterChart data={trends} title={`${days}-Day Estimated Water Footprint Trend`} />
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6" style={{ marginBottom: '1.5rem' }}>
-        <SectorChart data={sectors} />
-        <IndiaContext waterMl={summary.totalWater} />
+        <SectorChart 
+          data={sectors} 
+          selectedSector={selectedSector} 
+          onSelectSector={setSelectedSector} 
+        />
+        <IndiaContext waterMl={summary ? summary.totalWater : 0} />
       </div>
       
       <div className="glass-card">

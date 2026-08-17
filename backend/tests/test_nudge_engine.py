@@ -17,9 +17,24 @@ def test_empty_text_not_simple():
     assert detect_simple_task("") == False
     assert detect_simple_task(None) == False
 
-def test_duplicate_detection():
-    history = ["What is Python?", "How does AI work?"]
-    assert detect_duplicate("What is Python?", history) == True
+def test_near_duplicate_detection():
+    history = ["What is the capital of France?", "How does machine learning work?"]
+    # Case variation and punctuation
+    assert detect_duplicate("what is the capital of france", history) == True
+    # Paraphrased token overlap
+    assert detect_duplicate("What is capital of France country?", history) == True
+
+def test_spelling_lookup_simple():
+    assert detect_simple_task("how do you spell accommodation") == True
+    assert detect_simple_task("meaning of ephemeral") == True
+
+def test_timezone_lookup_simple():
+    assert detect_simple_task("convert 5pm est to ist") == True
+    assert detect_simple_task("what time is it in Tokyo") == True
+
+def test_single_fact_lookup_simple():
+    assert detect_simple_task("what is the capital of India") == True
+    assert detect_simple_task("who is the president of France") == True
 
 def test_no_duplicate():
     history = ["What is Python?", "How does AI work?"]

@@ -135,35 +135,33 @@ No installation needed — loaded directly into Chrome.
 
 ---
 
-## ▶️ Running
+## ▶️ Deployment Options (Hybrid Architecture)
 
-### Start the Backend
+For an SIH-style demo, NeerAI uses a **hybrid deployment** to maintain its zero-cost, privacy-first architecture while still being easily presentable to judges.
 
-```bash
-cd neerai/backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
+### Option 1: Hosted Demo (Quick Look)
+The dashboard can be deployed to any free static host (Vercel, Netlify, GitHub Pages) without needing a backend.
+1. Run `npm run build` in the `dashboard` directory.
+2. Deploy the `dist` folder to your static host.
+3. The live dashboard will automatically run in **Demo Mode**, populated with synthetic data clearly labeled with a "Demo Mode Active" badge. No real backend is required.
 
-API available at: http://localhost:8000
-Health check: http://localhost:8000/health
+### Option 2: Full Local Demo (Live Extension Sync)
+For the full experience showing the browser extension communicating live with the dashboard, run everything locally.
+This ensures no API keys or cloud databases are needed, preserving absolute user privacy.
 
-### Start the Dashboard
+**One-Command Start:**
+Just run `start.bat` (Windows) or `start.sh` (Mac/Linux) in the root directory. This will start both the backend and frontend simultaneously.
 
-```bash
-cd neerai/dashboard
-npm run dev
-```
-
-Dashboard available at: http://localhost:5173
+**Manual Start:**
+1. Start the Backend: `cd backend && uvicorn main:app --reload` (Runs on http://localhost:8000)
+2. Start the Dashboard: `cd dashboard && npm run dev` (Runs on http://localhost:5173)
 
 ### Load the Extension
-
 1. Open Chrome → `chrome://extensions/`
 2. Enable **Developer mode** (top right)
 3. Click **Load unpacked**
 4. Select the `neerai/extension/` folder
-5. Visit ChatGPT, Gemini, or Claude
-6. Click the NeerAI extension icon to see your session stats
+5. Visit ChatGPT, Gemini, or Claude to see live real-data synchronization.
 
 ---
 

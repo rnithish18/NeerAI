@@ -99,6 +99,18 @@ def log_session(req: LogRequest):
         "sustainability_score": score
     }
 
+class SyncSessionRequest(BaseModel):
+    interactions: int = 0
+    total_energy: float = 0.0
+    total_water: float = 0.0
+    score: int = 100
+    responses: Optional[List[dict]] = []
+
+@app.post("/sync/session")
+def sync_session_route(req: SyncSessionRequest):
+    result = db.sync_session(req.dict())
+    return result
+
 @app.get("/dashboard/summary")
 def dashboard_summary(days: int = 7):
     return db.get_dashboard_summary(days)
@@ -108,18 +120,31 @@ def dashboard_trends(days: int = 30):
     return db.get_daily_trends(days)
 
 @app.get("/dashboard/sectors")
-def dashboard_sectors():
-    return db.get_sector_stats()
+def dashboard_sectors(days: Optional[int] = None):
+    return db.get_sector_stats(days)
 
 @app.get("/dashboard/regions")
-def dashboard_regions():
-    return db.get_region_stats()
+def dashboard_regions(days: Optional[int] = None):
+    return db.get_region_stats(days)
+
+class SettingUpdate(BaseModel):
+    key: str
+    value: str
+
+@app.get("/settings")
+def get_settings():
+    return db.get_settings()
+
+@app.post("/settings")
+def update_setting(req: SettingUpdate):
+    db.set_setting(req.key, req.value)
+    return {"status": "success", "key": req.key, "value": req.value}
 
 @app.get("/methodology")
 def get_methodology():
     return {
         "title": "NeerAI Estimation Methodology",
-        "version": "1.0.0",
+        "version": "1.3.0",
         "disclaimer": "NeerAI does NOT physically measure data-center water consumption. All values are estimates based on configurable assumptions and published benchmarks.",
         "formula": {
             "energy": "energy_kwh = (output_word_count / 100) × energy_per_100_words",
@@ -127,12 +152,13 @@ def get_methodology():
             "water_ml": "water_ml = water_litres × 1000"
         },
         "parameters": {
-            "WUE_ONSITE": {"value": WUE_ONSITE, "unit": "L/kWh", "description": "On-site Water Usage Effectiveness — water used for cooling"},
-            "PUE": {"value": PUE, "unit": "ratio", "description": "Power Usage Effectiveness — total facility power / IT equipment power"},
-            "EWIF_OFFSITE": {"value": EWIF_OFFSITE, "unit": "L/kWh", "description": "Off-site Electricity Water Intensity Factor — water used in electricity generation"}
+            "WUE_ONSITE": {"value": WUE_ONSITE, "unit": "L/kWh", "description": "On-site Water Usage Effectiveness — water used for cooling (shipped default: 1.8)"},
+            "PUE": {"value": PUE, "unit": "ratio", "description": "Power Usage Effectiveness — total facility power / IT equipment power (shipped default: 1.2)"},
+            "EWIF_OFFSITE": {"value": EWIF_OFFSITE, "unit": "L/kWh", "description": "Off-site Electricity Water Intensity Factor — water used in electricity generation (shipped default: 0.5)"}
         },
         "energy_model": {
             "chat": {"value": 0.002, "unit": "kWh per 100 words"},
+            "reasoning": {"value": 0.035, "unit": "kWh per 100 words (o1/o3/DeepSeek-R1 extended thinking)"},
             "code": {"value": 0.015, "unit": "kWh per 100 words"},
             "image": {"value": 0.05, "unit": "kWh per 100 words"}
         },

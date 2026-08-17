@@ -70,6 +70,11 @@ def test_footprint_has_bottle_percentage():
     assert "bottle_percentage" in result
     assert result["bottle_percentage"] >= 0
 
+def test_reasoning_task():
+    energy = estimate_energy(100, "reasoning")
+    # 100/100 * 0.035 = 0.035
+    assert abs(energy - 0.035) < 0.001
+
 def test_sustainability_score_default():
     score = calculate_sustainability_score({"word_count": 50, "task_type": "chat"})
     assert score == 100
@@ -86,3 +91,11 @@ def test_sustainability_score_bounds():
         "nudge_type": "duplicate"
     })
     assert 0 <= score <= 100
+
+def test_proportional_score_scaling():
+    # Smooth progression rather than jumping at flat constants
+    score_300 = calculate_sustainability_score({"word_count": 300, "task_type": "chat"})
+    score_600 = calculate_sustainability_score({"word_count": 600, "task_type": "chat"})
+    score_1200 = calculate_sustainability_score({"word_count": 1200, "task_type": "chat"})
+    assert 100 > score_300 > score_600 > score_1200
+

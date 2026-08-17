@@ -16,6 +16,11 @@ Different data centers, cooling systems, and regions will have different values.
 # =============================================================================
 # SUSTAINABILITY CONSTANTS (configurable per deployment)
 # =============================================================================
+# Chosen shipped defaults:
+# WUE_ONSITE = 1.8 L/kWh (on-site cooling towers water usage)
+# PUE = 1.2 (Power Usage Effectiveness: facility power / IT equipment power)
+# EWIF_OFFSITE = 0.5 L/kWh (off-site electricity generation water intensity)
+# Combined multiplier = 1.8 + (1.2 * 0.5) = 2.4 L water per kWh
 WUE_ONSITE = 1.8    # On-site Water Usage Effectiveness (L/kWh) — cooling towers
 PUE = 1.2            # Power Usage Effectiveness — total facility / IT equipment
 EWIF_OFFSITE = 0.5   # Off-site Electricity Water Intensity Factor (L/kWh)
@@ -27,10 +32,24 @@ EWIF_OFFSITE = 0.5   # Off-site Electricity Water Intensity Factor (L/kWh)
 # ENERGY MODEL (estimated consumption per 100 output words)
 # =============================================================================
 ENERGY_PER_100_WORDS_KWH = {
-    "chat": 0.002,    # General conversational AI
-    "code": 0.015,    # Code generation (higher complexity)
-    "image": 0.05     # Image generation (highest resource usage)
+    "chat": 0.002,       # General conversational AI (standard mode)
+    "reasoning": 0.035,  # Extended thinking / Chain-of-thought models (e.g. o1/o3/DeepSeek-R1)
+    "code": 0.015,       # Code generation (higher complexity)
+    "image": 0.05        # Image generation (highest resource usage)
 }
+
+# =============================================================================
+# NUDGE & REGENERATION THRESHOLDS
+# =============================================================================
+DEFAULT_REGEN_THRESHOLD = 3
+REGEN_THRESHOLDS = {
+    "chat": 3,
+    "reasoning": 2,
+    "code": 4,
+    "image": 2
+}
+SIMILARITY_DUPLICATE_THRESHOLD = 0.75
+MAX_PROMPT_SIMPLE_WORDS = 15
 
 # =============================================================================
 # REGION-SPECIFIC SETTINGS

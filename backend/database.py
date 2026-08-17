@@ -88,38 +88,85 @@ class DatabaseManager:
             rows = conn.execute(query, (f'-{days} days',)).fetchall()
             return [dict(row) for row in rows]
             
-    def get_sector_stats(self):
-        query = '''
-            SELECT 
-                sector,
-                SUM(energy_kwh) as total_energy,
-                SUM(water_ml) as total_water,
-                AVG(sustainability_score) as avg_score,
-                COUNT(id) as session_count
-            FROM sessions
-            WHERE sector IS NOT NULL
-            GROUP BY sector
-            ORDER BY total_water DESC
-        '''
+    def get_sector_stats(self, days=None):
+        if days:
+            query = '''
+                SELECT 
+                    sector,
+                    SUM(energy_kwh) as total_energy,
+                    SUM(water_ml) as total_water,
+                    AVG(sustainability_score) as avg_score,
+                    COUNT(id) as session_count
+                FROM sessions
+                WHERE sector IS NOT NULL AND created_at >= date('now', ?)
+                GROUP BY sector
+                ORDER BY total_water DESC
+            '''
+            params = (f'-{days} days',)
+        else:
+            query = '''
+                SELECT 
+                    sector,
+                    SUM(energy_kwh) as total_energy,
+                    SUM(water_ml) as total_water,
+                    AVG(sustainability_score) as avg_score,
+                    COUNT(id) as session_count
+                FROM sessions
+                WHERE sector IS NOT NULL
+                GROUP BY sector
+                ORDER BY total_water DESC
+            '''
+            params = ()
         with self.get_connection() as conn:
-            rows = conn.execute(query).fetchall()
+            rows = conn.execute(query, params).fetchall()
             return [dict(row) for row in rows]
             
-    def get_region_stats(self):
-        query = '''
-            SELECT 
-                region,
-                SUM(energy_kwh) as total_energy,
-                SUM(water_ml) as total_water,
-                AVG(sustainability_score) as avg_score
-            FROM sessions
-            WHERE region IS NOT NULL
-            GROUP BY region
-            ORDER BY total_water DESC
-        '''
+    def get_region_stats(self, days=None):
+        if days:
+            query = '''
+                SELECT 
+                    region,
+                    SUM(energy_kwh) as total_energy,
+                    SUM(water_ml) as total_water,
+                    AVG(sustainability_score) as avg_score
+                FROM sessions
+                WHERE region IS NOT NULL AND created_at >= date('now', ?)
+                GROUP BY region
+                ORDER BY total_water DESC
+            '''
+            params = (f'-{days} days',)
+        else:
+            query = '''
+                SELECT 
+                    region,
+                    SUM(energy_kwh) as total_energy,
+                    SUM(water_ml) as total_water,
+                    AVG(sustainability_score) as avg_score
+                FROM sessions
+                WHERE region IS NOT NULL
+                GROUP BY region
+                ORDER BY total_water DESC
+            '''
+            params = ()
+        with self.get_connection() as conn:
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
+
+    def get_settings(self):
+        query = "SELECT key, value FROM settings"
         with self.get_connection() as conn:
             rows = conn.execute(query).fetchall()
-            return [dict(row) for row in rows]
+            return {row['key']: row['value'] for row in rows}
+
+    def set_setting(self, key: str, value: str):
+        query = '''
+            INSERT INTO settings (key, value, updated_at) 
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP
+        '''
+        with self.get_connection() as conn:
+            conn.execute(query, (key, str(value)))
+            conn.commit()
 
     def generate_demo_data(self):
         from config import USAGE_SECTORS, REGIONS_INDIA
@@ -148,6 +195,67 @@ class DatabaseManager:
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', ("demo", task, words, footprint['energy_kwh'], footprint['water_ml'], sector_val, region_val, score, date_str))
             conn.commit()
+
+    def sync_session(self, data):
+        from config import USAGE_SECTORS, REGIONS_INDIA
+        interactions = int(data.get('interactions', 0))
+        total_energy = float(data.get('total_energy', 0.0) or data.get('totalEnergy', 0.0))
+        total_water = float(data.get('total_water', 0.0) or data.get('totalWater', 0.0))
+        score = int(data.get('score', 94))
+        responses = data.get('responses', [])
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            current_count = cursor.execute("SELECT COUNT(id) FROM sessions").fetchone()[0]
+
+            if interactions > current_count:
+                needed = interactions - current_count
+                
+                # If specific responses exist in payload, insert them first
+                inserted_from_responses = 0
+                for r in responses[-needed:]:
+                    r_energy = float(r.get('energy', 0.0))
+                    r_water = float(r.get('water', 0.0))
+                    r_words = int(r.get('words', 150))
+                    r_task = r.get('taskType', 'chat')
+                    r_provider = r.get('provider', 'chatgpt')
+                    
+                    cursor.execute('''
+                        INSERT INTO sessions 
+                        (provider, task_type, word_count, energy_kwh, water_ml, sector, region, sustainability_score, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    ''', (
+                        r_provider, r_task, r_words, r_energy, r_water,
+                        random.choice(USAGE_SECTORS), random.choice(REGIONS_INDIA), score
+                    ))
+                    inserted_from_responses += 1
+
+                # If still needed, distribute the remaining energy/water evenly
+                remaining_needed = needed - inserted_from_responses
+                if remaining_needed > 0:
+                    unit_energy = total_energy / max(interactions, 1)
+                    unit_water = total_water / max(interactions, 1)
+                    now = datetime.now()
+
+                    for i in range(remaining_needed):
+                        date_val = now - timedelta(hours=random.randint(0, 48), minutes=random.randint(0, 60))
+                        cursor.execute('''
+                            INSERT INTO sessions 
+                            (provider, task_type, word_count, energy_kwh, water_ml, sector, region, sustainability_score, created_at)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ''', (
+                            random.choice(['chatgpt', 'gemini', 'claude']),
+                            'chat',
+                            random.randint(120, 280),
+                            unit_energy,
+                            unit_water,
+                            random.choice(USAGE_SECTORS),
+                            random.choice(REGIONS_INDIA),
+                            score,
+                            date_val.strftime('%Y-%m-%d %H:%M:%S')
+                        ))
+                conn.commit()
+            return {"status": "synced", "total_sessions": max(interactions, current_count)}
 
     def clear_demo_data(self):
         with self.get_connection() as conn:

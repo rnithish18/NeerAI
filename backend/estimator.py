@@ -92,45 +92,46 @@ def calculate_sustainability_score(session_data):
     """Calculate an experimental sustainability score (0-100).
     
     Higher score = more sustainable AI usage pattern.
-    This is an EXPERIMENTAL indicator, not a scientific measurement.
+    Uses smooth proportional scaling rather than fixed step-ladder penalties.
     
-    Penalties applied for:
-      - Excessive output length
-      - High-energy task types (image generation)
-      - Duplicate queries
-      - Excessive regenerations
-      - Simple tasks sent to AI
+    Penalties scale proportionally based on:
+      - Output length overage above 150 words
+      - Task type energy intensity (chat, code, reasoning, image)
+      - Behavioral inefficiencies (duplicates, regenerations, simple tasks)
     """
-    score = 100
+    score = 100.0
     
     word_count = session_data.get("word_count", 0)
-    task_type = session_data.get("task_type", "chat")
+    task_type = session_data.get("task_type", "chat").lower()
     nudge_type = session_data.get("nudge_type")
+    regen_count = session_data.get("regen_count", 0)
     
-    # Output length penalties
-    if word_count > 500:
-        score -= 3
-    if word_count > 1000:
-        score -= 5
-    if word_count > 3000:
-        score -= 8
-    if word_count > 5000:
-        score -= 12
+    # Proportional Output length penalty:
+    # Baseline up to 150 words without penalty.
+    # Severity scales continuously with overage rather than jumping at fixed thresholds
+    if word_count > 150:
+        overage = word_count - 150
+        length_penalty = min(28.0, round(overage / 125.0, 2))
+        score -= length_penalty
         
-    # Task type penalties
-    if task_type == "image":
-        score -= 8
-    elif task_type == "code":
-        score -= 3
-        
+    # Task type relative compute penalty
+    task_penalties = {
+        "chat": 0.0,
+        "code": 3.0,
+        "reasoning": 7.0,
+        "image": 10.0
+    }
+    score -= task_penalties.get(task_type, 0.0)
+    
     # Nudge-based penalties (behavioral inefficiencies)
     if nudge_type == "duplicate":
-        score -= 15
+        score -= 15.0
     elif nudge_type == "regeneration":
-        score -= 12
+        regen_penalty = min(20.0, 6.0 + max(0, regen_count - 2) * 3.5)
+        score -= regen_penalty
     elif nudge_type == "excessive_output":
-        score -= 10
+        score -= 8.0
     elif nudge_type == "simple_task":
-        score -= 10
+        score -= 8.0
         
-    return max(0, min(100, score))
+    return max(0, min(100, int(round(score))))
